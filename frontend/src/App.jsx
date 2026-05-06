@@ -18,7 +18,7 @@ function App() {
   }, []);
 
   const fetchConversations = async () => {
-    const res = await axios.get("http://localhost:5000/api/conversations");
+    const res = await axios.get("https://ai-chatapp-z17a.onrender.com/api/conversations");
     setConversations(res.data);
   };
 
@@ -26,7 +26,7 @@ function App() {
  const loadConversation = async (id) => {
   console.log("clicked id:", id) // is it even firing?
   setConversationId(id);
-  const res = await axios.get(`http://localhost:5000/api/history/${id}`);
+  const res = await axios.get(`https://ai-chatapp-z17a.onrender.com/api/history/${id}`);
   console.log("history response:", res.data) // what's coming back?
   const formatted = res.data.flatMap((m) => [
     { role: "user", text: m.userMessage },
@@ -50,7 +50,7 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
+      const res = await axios.post("https://ai-chatapp-z17a.onrender.com/api/chat", {
         message: input,
         conversationId,   // 👈 send it to backend
       });
