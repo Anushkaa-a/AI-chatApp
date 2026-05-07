@@ -1,9 +1,14 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const messageSchema = new mongoose.Schema({
-  conversationId: String,
-  userMessage: String,
-  aiReply: String,
-}, { timestamps: true });   // timestamps auto-adds createdAt
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true 
+  },
+  conversationId: { type: String, required: true },
+  userMessage: { type: String, required: true },
+  aiReply: { type: String, required: true },
+}, { timestamps: true })
 
-module.exports = mongoose.model("Message", messageSchema);
+module.exports = mongoose.model("Message", messageSchema)

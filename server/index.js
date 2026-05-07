@@ -1,41 +1,38 @@
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const mongoose = require("mongoose");
 const Message = require("./models/Message");
+const authRoutes = require("./routes/auth");
+const authMiddleware = require("./middleware/authMiddleware");
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected ✅"))
+  .then(() => console.log("MongoDB connected "))
   .catch((err) => console.log("DB error:", err));
-
-
-// console.log("key:", process.env.OPENROUTER_API_KEY.length);
-
-const {GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const genAI = new 
-   GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-app.get("/", (req, res)=>{
-    res.send("server is running ");
+app.get("/", (req, res) => {
+  res.send("server is running");
 });
 
-app.post("/api/chat", async (req, res) => {
+// auth routes
+app.use("/api/auth", authRoutes);
+
+// chat
+app.post("/api/chat", authMiddleware, async (req, res) => {
   const { message: userMsg, conversationId } = req.body;
+  const userId = req.userId;
 
   try {
-    // fetch previous messages from DB
     const history = await Message.find({ 
-  conversationId 
-}).sort({ createdAt: 1 }).limit(20);
+      conversationId, 
+      userId 
+    }).sort({ createdAt: 1 }).limit(20);
 
-    // format them for the AI
     const pastMessages = history.flatMap((m) => [
       { role: "user", content: m.userMessage },
       { role: "assistant", content: m.aiReply },
@@ -46,8 +43,8 @@ app.post("/api/chat", async (req, res) => {
       {
         model: "deepseek/deepseek-chat-v3-0324",
         messages: [
-          ...pastMessages,          // 👈 all previous messages
-          { role: "user", content: userMsg },  // 👈 current message
+          ...pastMessages,
+          { role: "user", content: userMsg },
         ],
       },
       {
@@ -62,11 +59,7 @@ app.post("/api/chat", async (req, res) => {
 
     const aiReply = response.data.choices[0].message.content;
 
-    // save to DB
-    await Message.create({
-        conversationId, 
-         userMessage: userMsg, 
-         aiReply });
+    await Message.create({ userId, conversationId, userMessage: userMsg, aiReply });
 
     res.json({ reply: aiReply });
 
@@ -76,21 +69,25 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-app.get("/api/history/:id", async (req, res) => {
+// history
+app.get("/api/history/:id", authMiddleware, async (req, res) => {
   const history = await Message.find({ 
-    conversationId: req.params.id  // 👈 filter by the id
+    conversationId: req.params.id,
+    userId: req.userId
   }).sort({ createdAt: 1 });
   res.json(history);
 });
 
-app.get("/api/conversations", async (req, res) => {
+// conversations
+app.get("/api/conversations", authMiddleware, async (req, res) => {
   const convos = await Message.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(req.userId) } },
     { $group: { _id: "$conversationId", createdAt: { $first: "$createdAt" }, firstMessage: { $first: "$userMessage" } } },
     { $sort: { createdAt: -1 } }
   ]);
   res.json(convos);
 });
 
-app.listen(5000, ()=>{
-    console.log("server running")
-}); 
+app.listen(5000, () => {
+  console.log("server running");
+});
