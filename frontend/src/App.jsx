@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
-import ChatWindow from './components/ChatWindow';
-import InputBar from './components/InputBar';
-import Sidebar from './components/Sidebar';
+import ChatWindow from './ChatWindow';
+import InputBar from './InputBar';
+import Sidebar from './Sidebar';
 import Auth from './pages/Auth';
 
 const API = "https://ai-chatapp-z17a.onrender.com"
@@ -14,9 +14,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState(uuidv4());
   const [conversations, setConversations] = useState([]);
-  const [token, setToken] = useState(localStorage.getItem("token")); // 👈 check if already logged in
+  const [token, setToken] = useState(localStorage.getItem("token")); //check if already logged in
 
-  // auth headers
+  
   const authHeaders = {
     headers: { Authorization: `Bearer ${token}` }
   }
@@ -77,7 +77,6 @@ function App() {
     }
   };
 
-  // 👈 show auth page if not logged in
   if (!token) return <Auth onLogin={handleLogin} />
 
   return (
@@ -87,7 +86,7 @@ function App() {
         conversationId={conversationId}
         loadConversation={loadConversation}
         startNewChat={startNewChat}
-        onLogout={handleLogout} // 👈 pass logout to sidebar
+        onLogout={handleLogout} 
       />
       <div className="flex flex-col flex-1">
         <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">

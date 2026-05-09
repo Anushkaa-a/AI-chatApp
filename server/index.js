@@ -59,7 +59,11 @@ app.post("/api/chat", authMiddleware, async (req, res) => {
 
     const aiReply = response.data.choices[0].message.content;
 
-    await Message.create({ userId, conversationId, userMessage: userMsg, aiReply });
+    await Message.create({ 
+       userId: new mongoose.Types.ObjectId(userId),
+       conversationId, 
+       userMessage: userMsg, 
+       aiReply });
 
     res.json({ reply: aiReply });
 
