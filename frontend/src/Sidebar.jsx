@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 
-function Sidebar({ conversations, conversationId, loadConversation, startNewChat }) {
+function Sidebar({ conversations, conversationId, loadConversation, startNewChat, onLogout }) {
   return (
     <div className="w-64 border-r border-white/5 flex flex-col p-3 gap-2">
       <button
@@ -28,6 +28,13 @@ function Sidebar({ conversations, conversationId, loadConversation, startNewChat
           </motion.button>
         ))}
       </div>
+
+      <button
+        onClick={onLogout}
+        className="mt-auto text-sm text-white/40 hover:text-red-400 transition-all py-2"
+      >
+        Logout
+      </button>
     </div>
   )
 }

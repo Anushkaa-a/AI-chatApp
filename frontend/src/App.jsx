@@ -27,6 +27,7 @@ function App() {
 
   const fetchConversations = async () => {
     const res = await axios.get(`${API}/api/conversations`, authHeaders);
+    console.log("convos:", res.data) 
     setConversations(res.data);
   };
 
