@@ -5,7 +5,7 @@ function Sidebar({ conversations, conversationId, loadConversation, startNewChat
     <div className="w-64 border-r border-white/5 flex flex-col p-3 gap-2">
       <button
         onClick={startNewChat}
-        className="w-full bg-cyan-500 hover:bg-cyan-400 text-white text-sm 
+        className="w-full bg-gray-500 hover:bg-cyan-400 text-white text-sm 
         font-medium py-2 rounded-xl transition-all"
       >
         + New Chat
