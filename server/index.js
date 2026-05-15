@@ -38,6 +38,9 @@ app.post("/api/chat", authMiddleware, async (req, res) => {
       { role: "assistant", content: m.aiReply },
     ]);
 
+    console.log("history length:", history.length) // 👈 add this
+    console.log("past messages:", pastMessages) 
+
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
