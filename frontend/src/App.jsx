@@ -13,7 +13,8 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState(uuidv4());
-  const [conversations, setConversations] = useState([]);
+  const [conversationId, setConversationId] = useState(
+  localStorage.getItem("conversationId") || uuidv4())
   const [token, setToken] = useState(() => {
   const t = localStorage.getItem("token")
   console.log("token on load:", t)
@@ -36,19 +37,22 @@ function App() {
   };
 
   const loadConversation = async (id) => {
-    setConversationId(id);
-    const res = await axios.get(`${API}/api/history/${id}`, authHeaders);
-    const formatted = res.data.flatMap((m) => [
-      { role: "user", text: m.userMessage },
-      { role: "ai", text: m.aiReply },
-    ]);
-    setMessages(formatted);
-  };
+  localStorage.setItem("conversationId", id)
+  setConversationId(id);
+  const res = await axios.get(`${API}/api/history/${id}`, authHeaders);
+  const formatted = res.data.flatMap((m) => [
+    { role: "user", text: m.userMessage },
+    { role: "ai", text: m.aiReply },
+  ]);
+  setMessages(formatted);
+};
 
-  const startNewChat = () => {
-    setConversationId(uuidv4());
-    setMessages([]);
-  };
+const startNewChat = () => {
+  const newId = uuidv4()
+  localStorage.setItem("conversationId", newId)
+  setConversationId(newId)
+  setMessages([])
+}
 
   const handleLogin = () => {
     setToken(localStorage.getItem("token"));
