@@ -14,7 +14,7 @@ const MessageBubble = ({ text, role }) => {
       {!isUser && (
         <div className="w-7 h-7 rounded-full bg-cyan-500/20 border border-cyan-500/30
           flex items-center justify-center text-xs text-gray-400 mr-2 mt-1 shrink-0">
-          ✦
+          
         </div>
       )}
 

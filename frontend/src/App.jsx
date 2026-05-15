@@ -12,7 +12,6 @@ function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [conversationId, setConversationId] = useState(uuidv4());
   const [conversationId, setConversationId] = useState(
   localStorage.getItem("conversationId") || uuidv4())
   const [token, setToken] = useState(() => {
@@ -100,7 +99,7 @@ const startNewChat = () => {
       <div className="flex flex-col flex-1">
         <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
           <span className="text-xl">✦</span>
-          <h1 className="text-base font-semibold tracking-widest text-gray-400 uppercase">AskAI</h1>
+          <h1 className="text-base font-semibold tracking-widest text-gray-400 uppercase">AI</h1>
         </div>
         <ChatWindow messages={messages} loading={loading} />
         <InputBar input={input} sendMessage={sendMessage} setInput={setInput} loading={loading} />
